@@ -36,34 +36,24 @@ const mealSchedule = [
 
 const getMinutes = (date) => date.getHours() * 60 + date.getMinutes();
 
-function getCurrentMealIndex(now = new Date()) {
+function getCurrentOrNextMeal(now = new Date()) {
   const minutes = getMinutes(now);
   for (let i = 0; i < mealSchedule.length; i++) {
     const start = mealSchedule[i].start.hour * 60 + mealSchedule[i].start.min;
     const end = mealSchedule[i].end.hour * 60 + mealSchedule[i].end.min;
-    if (minutes >= start && minutes < end) return i;
-    // After last meal, show tomorrow's breakfast
-    if (i === mealSchedule.length - 1 && minutes >= end) return 0;
+    if (minutes >= start && minutes < end) return { mealIndex: i, dayOffset: 0 };
+    if (minutes < start) return { mealIndex: i, dayOffset: 0 }; // Next meal
   }
-  // Before first meal, show breakfast
-  return 0;
-}
-
-function getDayOffset(now = new Date()) {
-  const minutes = getMinutes(now);
-  const lastMealEnd = mealSchedule[mealSchedule.length - 1].end;
-  const lastMealEndMinutes = lastMealEnd.hour * 60 + lastMealEnd.min;
-  // If after dinner, offset day by +1
-  return minutes >= lastMealEndMinutes ? 1 : 0;
+  // After last meal, show tomorrow's breakfast
+  return { mealIndex: 0, dayOffset: 1 };
 }
 
 function App() {
   const [selectedMess, setSelectedMess] = useState('sannasi');
   const [now, setNow] = useState(new Date());
   // mealNav: { dayOffset: 0 = today, 1 = tomorrow, -1 = yesterday, ...; mealIndex: 0-3, isLive: true/false }
-  const initialDayOffset = getDayOffset(now);
-  const initialMealIndex = getCurrentMealIndex(now);
-  const [mealNav, setMealNav] = useState({ dayOffset: initialDayOffset, mealIndex: initialMealIndex, isLive: true });
+  const initial = getCurrentOrNextMeal(now);
+  const [mealNav, setMealNav] = useState({ dayOffset: initial.dayOffset, mealIndex: initial.mealIndex, isLive: true });
 
   // Live clock effect
   useEffect(() => {
@@ -74,10 +64,9 @@ function App() {
   // Auto-update mealNav only if isLive is true
   useEffect(() => {
     if (mealNav.isLive) {
-      const currentDayOffset = getDayOffset(now);
-      const currentMealIdx = getCurrentMealIndex(now);
-      if (mealNav.dayOffset !== currentDayOffset || mealNav.mealIndex !== currentMealIdx) {
-        setMealNav({ dayOffset: currentDayOffset, mealIndex: currentMealIdx, isLive: true });
+      const current = getCurrentOrNextMeal(now);
+      if (mealNav.dayOffset !== current.dayOffset || mealNav.mealIndex !== current.mealIndex) {
+        setMealNav({ dayOffset: current.dayOffset, mealIndex: current.mealIndex, isLive: true });
       }
     }
     // eslint-disable-next-line
@@ -102,9 +91,8 @@ function App() {
   };
   // Return to live mode
   const handleGoLive = () => {
-    const currentDayOffset = getDayOffset(now);
-    const currentMealIdx = getCurrentMealIndex(now);
-    setMealNav({ dayOffset: currentDayOffset, mealIndex: currentMealIdx, isLive: true });
+    const current = getCurrentOrNextMeal(now);
+    setMealNav({ dayOffset: current.dayOffset, mealIndex: current.mealIndex, isLive: true });
   };
 
   // Get meal and day label
@@ -114,6 +102,13 @@ function App() {
 
   // Format clock (12-hour with AM/PM)
   const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+  // Format meal time (12-hour with AM/PM)
+  function formatTime(hour, min) {
+    const d = new Date();
+    d.setHours(hour);
+    d.setMinutes(min);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 text-gray-900 flex flex-col w-full h-full fixed inset-0">
@@ -167,7 +162,7 @@ function App() {
           <div className="w-full bg-white rounded-3xl shadow-xl p-6 mb-4 flex flex-col items-center border-4 border-blue-200">
             <div className="flex items-center gap-3 mb-2">
               <span className="text-2xl font-bold text-blue-500">{meal.name}</span>
-              <span className="text-xs text-gray-500">{meal.start.hour.toString().padStart(2, '0')}:{meal.start.min.toString().padStart(2, '0')} – {meal.end.hour.toString().padStart(2, '0')}:{meal.end.min.toString().padStart(2, '0')}</span>
+              <span className="text-xs text-gray-500">{formatTime(meal.start.hour, meal.start.min)} – {formatTime(meal.end.hour, meal.end.min)}</span>
             </div>
             <div className="grid grid-cols-1 gap-4 w-full">
               {meal.items.map((item, idx) => (
