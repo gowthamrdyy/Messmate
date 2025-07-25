@@ -176,7 +176,7 @@ function App() {
         <span className={`px-3 py-2 rounded-r-full font-semibold text-sm transition ${selectedMess === 'mblock' ? 'bg-pink-500 text-white' : 'bg-white text-pink-500 border border-pink-500'}`}>M-block</span>
       </div>
       {/* Meal Navigation */}
-      <main className="flex-1 flex flex-col items-center justify-start p-4 w-full max-w-md mx-auto">
+      <main className="flex-1 flex flex-col items-center justify-start p-4 w-full max-w-md mx-auto pb-24">
         <div className="flex justify-between items-center w-full mb-4">
           <button
             onClick={handlePrevMeal}
@@ -205,7 +205,7 @@ function App() {
               <span className="text-2xl font-bold text-blue-500">{meal.name}</span>
               <span className="text-xs text-gray-500">{formatTime(meal.start.hour, meal.start.min)} – {formatTime(meal.end.hour, meal.end.min)}</span>
             </div>
-            <div className="grid grid-cols-1 gap-4 w-full">
+            <div className="grid grid-cols-1 gap-4 w-full max-h-48 overflow-y-auto pr-2">
               {meal.items.map((item, idx) => (
                 <div
                   key={idx}
@@ -218,7 +218,7 @@ function App() {
           </div>
         </section>
       </main>
-      <footer className="flex flex-col items-center justify-center gap-2 text-xs text-gray-500 py-4">
+      <footer className="flex flex-col items-center justify-center gap-2 text-xs text-gray-500 py-4 w-full bg-white bg-opacity-80 backdrop-blur-sm fixed bottom-0 left-0 z-50">
         <div className="flex gap-4 mb-1">
           <a href="https://instagram.com/gowthamrdyy" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-pink-500 text-lg"><FaInstagram /></a>
           <a href="https://github.com/gowthamrdyy" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="hover:text-gray-900 text-lg"><FaGithub /></a>
