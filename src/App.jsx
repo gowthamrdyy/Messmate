@@ -87,7 +87,7 @@ function getCurrentOrNextMeal(now = new Date(), navDayOffset = 0) {
 // Sample menu data for both messes and all days
 const menuData = {
   sannasi: {
-    monday:    { breakfast: ["Idli", "Sambar", "Chutney"], lunch: ["Rice", "Dal", "Paneer Curry"], snacks: ["Samosa", "Tea"], dinner: ["Chapati", "Mixed Veg", "Curd Rice"] },
+    monday:    { breakfast: ["Sweet", "Bread", "Butter", "Jam", "Idly", "Sambar", "Spl Chutney", "Poori", "Aloo Dal Masala", "Tea/Coffee/Milk", "Boiled Egg", "Banana"], lunch: ["Rice", "Dal", "Paneer Curry"], snacks: ["Samosa", "Tea"], dinner: ["Chapati", "Mixed Veg", "Curd Rice"] },
     tuesday:   { breakfast: ["Dosa", "Chutney", "Upma"], lunch: ["Rice", "Rasam", "Aloo Fry"], snacks: ["Bonda", "Coffee"], dinner: ["Paratha", "Chana Masala", "Rice"] },
     wednesday: { breakfast: ["Pongal", "Vada", "Chutney"], lunch: ["Rice", "Sambar", "Cabbage Poriyal"], snacks: ["Pakoda", "Tea"], dinner: ["Roti", "Paneer Butter Masala", "Rice"] },
     thursday:  { breakfast: ["Poori", "Potato Masala", "Chutney"], lunch: ["Rice", "Kootu", "Beans Poriyal"], snacks: ["Samosa", "Milk"], dinner: ["Dosa", "Tomato Chutney", "Rice"] },
