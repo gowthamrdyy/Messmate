@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import { FaInstagram, FaGithub, FaLinkedin } from 'react-icons/fa';
+import { Analytics } from "@vercel/analytics/react";
 
 const messNames = [
   { key: 'sannasi', label: 'Sannasi (Boys)' },
@@ -254,6 +255,7 @@ function App() {
           <span>Gowthamrdyy</span>
         </div>
       </footer>
+      <Analytics />
     </div>
   );
 }
