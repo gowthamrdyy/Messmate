@@ -39,7 +39,7 @@ _“What's for lunch today in mess”_
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/messmate.git
+git clone https://github.com/gowthamrdyy/messmate.git
 
 # 2. Navigate into the project
 cd messmate
