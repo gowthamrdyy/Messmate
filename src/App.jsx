@@ -153,10 +153,10 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 text-gray-900 flex flex-col w-full h-full fixed inset-0">
-      <header className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-5 shadow-md relative flex flex-col items-center">
-        <h1 className="text-3xl font-extrabold tracking-wide drop-shadow">Messmate</h1>
-        <p className="text-base font-medium opacity-90">SRM Hostel Mess Menu</p>
-        <div className="mt-2 text-lg font-mono bg-white/20 rounded px-3 py-1 shadow inline-block tracking-widest">
+      <header className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 shadow-md relative flex flex-col items-center">
+        <h1 className="text-2xl font-extrabold tracking-wide drop-shadow">Messmate</h1>
+        <p className="text-sm font-medium opacity-90">SRM Hostel Mess Menu</p>
+        <div className="mt-1 text-base font-mono bg-white/20 rounded px-2 py-0.5 shadow inline-block tracking-widest">
           {timeString}
         </div>
       </header>
@@ -218,15 +218,15 @@ function App() {
           </div>
         </section>
       </main>
-      <footer className="flex flex-col items-center justify-center gap-2 text-xs text-gray-500 py-4 w-full bg-white bg-opacity-80 backdrop-blur-sm fixed bottom-0 left-0 z-50">
-        <div className="flex gap-4 mb-1">
-          <a href="https://instagram.com/gowthamrdyy" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-pink-500 text-lg"><FaInstagram /></a>
-          <a href="https://github.com/gowthamrdyy" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="hover:text-gray-900 text-lg"><FaGithub /></a>
-          <a href="https://linkedin.com/in/gowthamrdyy" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-blue-700 text-lg"><FaLinkedin /></a>
+      <footer className="flex flex-col items-center justify-center gap-1 text-xs text-gray-500 py-2 w-full bg-white bg-opacity-80 backdrop-blur-sm fixed bottom-0 left-0 z-50">
+        <div className="flex gap-3 mb-0.5">
+          <a href="https://instagram.com/gowthamrdyy" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-pink-500 text-base"><FaInstagram /></a>
+          <a href="https://github.com/gowthamrdyy" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="hover:text-gray-900 text-base"><FaGithub /></a>
+          <a href="https://linkedin.com/in/gowthamrdyy" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-blue-700 text-base"><FaLinkedin /></a>
         </div>
         <div className="flex items-center gap-1">
           <span>Made with</span>
-          <span className="text-red-500 text-base">♥</span>
+          <span className="text-red-500 text-sm">♥</span>
           <span>Gowthamrdyy</span>
         </div>
       </footer>
