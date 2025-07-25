@@ -13,7 +13,7 @@ const weekdaySchedule = [
     name: 'Breakfast',
     start: { hour: 7, min: 0 },
     end: { hour: 9, min: 30 },
-    items: [ { name: 'Idli' }, { name: 'Sambar' }, { name: 'Chutney' } ]
+    items: [ { name: 'Sweet' }, { name: 'Bread' }, { name: 'Chutney' } ]
   },
   {
     name: 'Lunch',
@@ -84,6 +84,28 @@ function getCurrentOrNextMeal(now = new Date(), navDayOffset = 0) {
   return { mealIndex: 0, dayOffset: navDayOffset + 1 };
 }
 
+// Sample menu data for both messes and all days
+const menuData = {
+  sannasi: {
+    monday:    { breakfast: ["Idli", "Sambar", "Chutney"], lunch: ["Rice", "Dal", "Paneer Curry"], snacks: ["Samosa", "Tea"], dinner: ["Chapati", "Mixed Veg", "Curd Rice"] },
+    tuesday:   { breakfast: ["Dosa", "Chutney", "Upma"], lunch: ["Rice", "Rasam", "Aloo Fry"], snacks: ["Bonda", "Coffee"], dinner: ["Paratha", "Chana Masala", "Rice"] },
+    wednesday: { breakfast: ["Pongal", "Vada", "Chutney"], lunch: ["Rice", "Sambar", "Cabbage Poriyal"], snacks: ["Pakoda", "Tea"], dinner: ["Roti", "Paneer Butter Masala", "Rice"] },
+    thursday:  { breakfast: ["Poori", "Potato Masala", "Chutney"], lunch: ["Rice", "Kootu", "Beans Poriyal"], snacks: ["Samosa", "Milk"], dinner: ["Dosa", "Tomato Chutney", "Rice"] },
+    friday:    { breakfast: ["Uttapam", "Chutney", "Sambar"], lunch: ["Rice", "Dal Fry", "Bhindi Fry"], snacks: ["Vada", "Tea"], dinner: ["Chapati", "Aloo Curry", "Rice"] },
+    saturday:  { breakfast: ["Idli", "Sambar", "Chutney"], lunch: ["Rice", "Dal", "Paneer Curry"], snacks: ["Biscuit", "Tea"], dinner: ["Roti", "Mixed Veg", "Rice"] },
+    sunday:    { breakfast: ["Dosa", "Chutney", "Vada"], lunch: ["Rice", "Sambar", "Cabbage Poriyal"], snacks: ["Cake", "Milk"], dinner: ["Paratha", "Chana Masala", "Rice"] },
+  },
+  mblock: {
+    monday:    { breakfast: ["Poha", "Chutney", "Banana"], lunch: ["Rice", "Dal Tadka", "Gobi Masala"], snacks: ["Sandwich", "Tea"], dinner: ["Roti", "Paneer Curry", "Rice"] },
+    tuesday:   { breakfast: ["Upma", "Chutney", "Idli"], lunch: ["Rice", "Sambar", "Aloo Fry"], snacks: ["Biscuit", "Coffee"], dinner: ["Dosa", "Tomato Chutney", "Rice"] },
+    wednesday: { breakfast: ["Dosa", "Chutney", "Vada"], lunch: ["Rice", "Rasam", "Beans Poriyal"], snacks: ["Cake", "Tea"], dinner: ["Chapati", "Mixed Veg", "Rice"] },
+    thursday:  { breakfast: ["Idli", "Sambar", "Chutney"], lunch: ["Rice", "Dal", "Bhindi Fry"], snacks: ["Samosa", "Milk"], dinner: ["Paratha", "Aloo Curry", "Rice"] },
+    friday:    { breakfast: ["Poori", "Potato Masala", "Chutney"], lunch: ["Rice", "Kootu", "Cabbage Poriyal"], snacks: ["Vada", "Tea"], dinner: ["Roti", "Paneer Butter Masala", "Rice"] },
+    saturday:  { breakfast: ["Uttapam", "Chutney", "Sambar"], lunch: ["Rice", "Dal Tadka", "Gobi Masala"], snacks: ["Bonda", "Tea"], dinner: ["Dosa", "Chutney", "Rice"] },
+    sunday:    { breakfast: ["Pongal", "Vada", "Chutney"], lunch: ["Rice", "Sambar", "Beans Poriyal"], snacks: ["Pakoda", "Milk"], dinner: ["Chapati", "Aloo Curry", "Rice"] },
+  }
+};
+
 function App() {
   const [selectedMess, setSelectedMess] = useState('sannasi');
   const [now, setNow] = useState(new Date());
@@ -139,6 +161,8 @@ function App() {
   const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mealNav.dayOffset);
   const schedule = getScheduleForDay(date);
   const meal = schedule[mealNav.mealIndex];
+  const dayKey = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+  const menuItems = menuData[selectedMess][dayKey][meal.name.toLowerCase()] || [];
   const dayLabel = mealNav.dayOffset === 0 ? 'Today' : mealNav.dayOffset === 1 ? 'Tomorrow' : date.toLocaleDateString('en-IN', { weekday: 'long' });
 
   // Format clock (12-hour with AM/PM)
@@ -206,12 +230,12 @@ function App() {
               <span className="text-xs text-gray-500">{formatTime(meal.start.hour, meal.start.min)} – {formatTime(meal.end.hour, meal.end.min)}</span>
             </div>
             <div className="grid grid-cols-1 gap-4 w-full max-h-48 overflow-y-auto pr-2">
-              {meal.items.map((item, idx) => (
+              {menuItems.map((item, idx) => (
                 <div
                   key={idx}
                   className="flex items-center gap-4 bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 rounded-xl p-4 shadow hover:scale-105 transition text-lg font-semibold"
                 >
-                  <span>{item.name}</span>
+                  <span>{item}</span>
                 </div>
               ))}
             </div>
