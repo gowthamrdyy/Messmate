@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import './App.css';
+import { FaInstagram, FaGithub, FaLinkedin } from 'react-icons/fa';
 
 const messNames = [
   { key: 'sannasi', label: 'Sannasi (Boys)' },
   { key: 'mblock', label: 'M-block (Girls)' },
 ];
 
-// Meal schedule and placeholder data
-const mealSchedule = [
+// Weekday and weekend meal schedules
+const weekdaySchedule = [
   {
     name: 'Breakfast',
     start: { hour: 7, min: 0 },
@@ -34,25 +35,60 @@ const mealSchedule = [
   },
 ];
 
+const weekendSchedule = [
+  {
+    name: 'Breakfast',
+    start: { hour: 7, min: 30 },
+    end: { hour: 9, min: 30 },
+    items: [ { name: 'Idli' }, { name: 'Sambar' }, { name: 'Chutney' } ]
+  },
+  {
+    name: 'Lunch',
+    start: { hour: 12, min: 0 },
+    end: { hour: 14, min: 0 },
+    items: [ { name: 'Rice' }, { name: 'Dal' }, { name: 'Paneer Curry' } ]
+  },
+  {
+    name: 'Snacks',
+    start: { hour: 16, min: 30 },
+    end: { hour: 17, min: 30 },
+    items: [ { name: 'Samosa' }, { name: 'Tea' } ]
+  },
+  {
+    name: 'Dinner',
+    start: { hour: 19, min: 30 },
+    end: { hour: 21, min: 0 },
+    items: [ { name: 'Chapati' }, { name: 'Mixed Veg' }, { name: 'Curd Rice' } ]
+  },
+];
+
+function getScheduleForDay(date) {
+  const day = date.getDay(); // 0 = Sunday, 6 = Saturday
+  return (day === 0 || day === 6) ? weekendSchedule : weekdaySchedule;
+}
+
 const getMinutes = (date) => date.getHours() * 60 + date.getMinutes();
 
-function getCurrentOrNextMeal(now = new Date()) {
+function getCurrentOrNextMeal(now = new Date(), navDayOffset = 0) {
+  const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + navDayOffset);
+  const schedule = getScheduleForDay(date);
   const minutes = getMinutes(now);
-  for (let i = 0; i < mealSchedule.length; i++) {
-    const start = mealSchedule[i].start.hour * 60 + mealSchedule[i].start.min;
-    const end = mealSchedule[i].end.hour * 60 + mealSchedule[i].end.min;
-    if (minutes >= start && minutes < end) return { mealIndex: i, dayOffset: 0 };
-    if (minutes < start) return { mealIndex: i, dayOffset: 0 }; // Next meal
+  for (let i = 0; i < schedule.length; i++) {
+    const start = schedule[i].start.hour * 60 + schedule[i].start.min;
+    const end = schedule[i].end.hour * 60 + schedule[i].end.min;
+    if (navDayOffset === 0 && minutes >= start && minutes < end) return { mealIndex: i, dayOffset: navDayOffset };
+    if (navDayOffset === 0 && minutes < start) return { mealIndex: i, dayOffset: navDayOffset };
+    if (navDayOffset !== 0) return { mealIndex: 0, dayOffset: navDayOffset }; // For browsing other days, default to breakfast
   }
   // After last meal, show tomorrow's breakfast
-  return { mealIndex: 0, dayOffset: 1 };
+  return { mealIndex: 0, dayOffset: navDayOffset + 1 };
 }
 
 function App() {
   const [selectedMess, setSelectedMess] = useState('sannasi');
   const [now, setNow] = useState(new Date());
   // mealNav: { dayOffset: 0 = today, 1 = tomorrow, -1 = yesterday, ...; mealIndex: 0-3, isLive: true/false }
-  const initial = getCurrentOrNextMeal(now);
+  const initial = getCurrentOrNextMeal(now, 0);
   const [mealNav, setMealNav] = useState({ dayOffset: initial.dayOffset, mealIndex: initial.mealIndex, isLive: true });
 
   // Live clock effect
@@ -64,7 +100,7 @@ function App() {
   // Auto-update mealNav only if isLive is true
   useEffect(() => {
     if (mealNav.isLive) {
-      const current = getCurrentOrNextMeal(now);
+      const current = getCurrentOrNextMeal(now, 0);
       if (mealNav.dayOffset !== current.dayOffset || mealNav.mealIndex !== current.mealIndex) {
         setMealNav({ dayOffset: current.dayOffset, mealIndex: current.mealIndex, isLive: true });
       }
@@ -75,15 +111,19 @@ function App() {
   // Navigation logic
   const handlePrevMeal = () => {
     setMealNav((prev) => {
+      const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + prev.dayOffset);
+      const schedule = getScheduleForDay(date);
       if (prev.mealIndex === 0) {
-        return { dayOffset: prev.dayOffset - 1, mealIndex: mealSchedule.length - 1, isLive: false };
+        return { dayOffset: prev.dayOffset - 1, mealIndex: getScheduleForDay(new Date(now.getFullYear(), now.getMonth(), now.getDate() + prev.dayOffset - 1)).length - 1, isLive: false };
       }
       return { ...prev, mealIndex: prev.mealIndex - 1, isLive: false };
     });
   };
   const handleNextMeal = () => {
     setMealNav((prev) => {
-      if (prev.mealIndex === mealSchedule.length - 1) {
+      const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + prev.dayOffset);
+      const schedule = getScheduleForDay(date);
+      if (prev.mealIndex === schedule.length - 1) {
         return { dayOffset: prev.dayOffset + 1, mealIndex: 0, isLive: false };
       }
       return { ...prev, mealIndex: prev.mealIndex + 1, isLive: false };
@@ -91,14 +131,15 @@ function App() {
   };
   // Return to live mode
   const handleGoLive = () => {
-    const current = getCurrentOrNextMeal(now);
+    const current = getCurrentOrNextMeal(now, 0);
     setMealNav({ dayOffset: current.dayOffset, mealIndex: current.mealIndex, isLive: true });
   };
 
   // Get meal and day label
-  const meal = mealSchedule[mealNav.mealIndex];
-  const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mealNav.dayOffset);
-  const dayLabel = mealNav.dayOffset === 0 ? 'Today' : mealNav.dayOffset === 1 ? 'Tomorrow' : day.toLocaleDateString('en-IN', { weekday: 'long' });
+  const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mealNav.dayOffset);
+  const schedule = getScheduleForDay(date);
+  const meal = schedule[mealNav.mealIndex];
+  const dayLabel = mealNav.dayOffset === 0 ? 'Today' : mealNav.dayOffset === 1 ? 'Tomorrow' : date.toLocaleDateString('en-IN', { weekday: 'long' });
 
   // Format clock (12-hour with AM/PM)
   const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
@@ -177,8 +218,17 @@ function App() {
           </div>
         </section>
       </main>
-      <footer className="text-center text-xs text-gray-400 py-2">
-        &copy; {new Date().getFullYear()} Messmate | SRM Hostel
+      <footer className="flex flex-col items-center justify-center gap-2 text-xs text-gray-500 py-4">
+        <div className="flex gap-4 mb-1">
+          <a href="https://instagram.com/gowthamrdyy" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-pink-500 text-lg"><FaInstagram /></a>
+          <a href="https://github.com/gowthamrdyy" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="hover:text-gray-900 text-lg"><FaGithub /></a>
+          <a href="https://linkedin.com/in/gowthamrdyy" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-blue-700 text-lg"><FaLinkedin /></a>
+        </div>
+        <div className="flex items-center gap-1">
+          <span>Made with</span>
+          <span className="text-red-500 text-base">♥</span>
+          <span>Gowthamrdyy</span>
+        </div>
       </footer>
     </div>
   );
