@@ -224,16 +224,16 @@ function App() {
         </div>
         {/* Meal Card */}
         <section className="w-full flex flex-col items-center">
-          <div className="w-full bg-white rounded-3xl shadow-xl p-6 mb-4 flex flex-col items-center border-4 border-blue-200">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="text-2xl font-bold text-blue-500">{meal.name}</span>
-              <span className="text-xs text-gray-500">{formatTime(meal.start.hour, meal.start.min)} – {formatTime(meal.end.hour, meal.end.min)}</span>
+          <div className="w-full bg-gray-200 rounded-3xl shadow-2xl p-8 mb-6 flex flex-col items-center border-4 border-blue-300">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-3xl font-bold text-blue-700">{meal.name}</span>
+              <span className="text-sm text-gray-600">{formatTime(meal.start.hour, meal.start.min)} – {formatTime(meal.end.hour, meal.end.min)}</span>
             </div>
-            <div className="grid grid-cols-1 gap-4 w-full max-h-48 overflow-y-auto pr-2">
+            <div className="grid grid-cols-1 gap-4 w-full max-h-64 overflow-y-auto pr-2">
               {menuItems.map((item, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-4 bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 rounded-xl p-4 shadow hover:scale-105 transition text-lg font-semibold"
+                  className="flex items-center gap-4 bg-gray-100 rounded-xl p-4 shadow-md hover:scale-105 transition text-xl font-semibold text-gray-800"
                 >
                   <span>{item}</span>
                 </div>
