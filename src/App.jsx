@@ -12,25 +12,25 @@ const mealSchedule = [
     name: 'Breakfast',
     start: { hour: 7, min: 0 },
     end: { hour: 9, min: 30 },
-    items: [ { icon: '🥞', name: 'Idli' }, { icon: '🍲', name: 'Sambar' }, { icon: '🥥', name: 'Chutney' } ]
+    items: [ { name: 'Idli' }, { name: 'Sambar' }, { name: 'Chutney' } ]
   },
   {
     name: 'Lunch',
     start: { hour: 11, min: 30 },
     end: { hour: 13, min: 30 },
-    items: [ { icon: '🍚', name: 'Rice' }, { icon: '🥣', name: 'Dal' }, { icon: '🧀', name: 'Paneer Curry' } ]
+    items: [ { name: 'Rice' }, { name: 'Dal' }, { name: 'Paneer Curry' } ]
   },
   {
     name: 'Snacks',
     start: { hour: 16, min: 30 },
     end: { hour: 17, min: 30 },
-    items: [ { icon: '🥟', name: 'Samosa' }, { icon: '🍵', name: 'Tea' } ]
+    items: [ { name: 'Samosa' }, { name: 'Tea' } ]
   },
   {
     name: 'Dinner',
     start: { hour: 19, min: 30 },
     end: { hour: 21, min: 0 },
-    items: [ { icon: '🥙', name: 'Chapati' }, { icon: '🥗', name: 'Mixed Veg' }, { icon: '🍚', name: 'Curd Rice' } ]
+    items: [ { name: 'Chapati' }, { name: 'Mixed Veg' }, { name: 'Curd Rice' } ]
   },
 ];
 
@@ -59,12 +59,11 @@ function getDayOffset(now = new Date()) {
 
 function App() {
   const [selectedMess, setSelectedMess] = useState('sannasi');
-  const [darkMode, setDarkMode] = useState(false);
   const [now, setNow] = useState(new Date());
-  // mealNav: { dayOffset: 0 = today, 1 = tomorrow, -1 = yesterday, ...; mealIndex: 0-3 }
+  // mealNav: { dayOffset: 0 = today, 1 = tomorrow, -1 = yesterday, ...; mealIndex: 0-3, isLive: true/false }
   const initialDayOffset = getDayOffset(now);
   const initialMealIndex = getCurrentMealIndex(now);
-  const [mealNav, setMealNav] = useState({ dayOffset: initialDayOffset, mealIndex: initialMealIndex });
+  const [mealNav, setMealNav] = useState({ dayOffset: initialDayOffset, mealIndex: initialMealIndex, isLive: true });
 
   // Live clock effect
   useEffect(() => {
@@ -72,12 +71,13 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // Auto-update mealNav when time changes and user is on 'now'
+  // Auto-update mealNav only if isLive is true
   useEffect(() => {
-    if (mealNav.dayOffset === getDayOffset(now)) {
+    if (mealNav.isLive) {
+      const currentDayOffset = getDayOffset(now);
       const currentMealIdx = getCurrentMealIndex(now);
-      if (mealNav.mealIndex !== currentMealIdx) {
-        setMealNav({ dayOffset: getDayOffset(now), mealIndex: currentMealIdx });
+      if (mealNav.dayOffset !== currentDayOffset || mealNav.mealIndex !== currentMealIdx) {
+        setMealNav({ dayOffset: currentDayOffset, mealIndex: currentMealIdx, isLive: true });
       }
     }
     // eslint-disable-next-line
@@ -87,18 +87,24 @@ function App() {
   const handlePrevMeal = () => {
     setMealNav((prev) => {
       if (prev.mealIndex === 0) {
-        return { dayOffset: prev.dayOffset - 1, mealIndex: mealSchedule.length - 1 };
+        return { dayOffset: prev.dayOffset - 1, mealIndex: mealSchedule.length - 1, isLive: false };
       }
-      return { ...prev, mealIndex: prev.mealIndex - 1 };
+      return { ...prev, mealIndex: prev.mealIndex - 1, isLive: false };
     });
   };
   const handleNextMeal = () => {
     setMealNav((prev) => {
       if (prev.mealIndex === mealSchedule.length - 1) {
-        return { dayOffset: prev.dayOffset + 1, mealIndex: 0 };
+        return { dayOffset: prev.dayOffset + 1, mealIndex: 0, isLive: false };
       }
-      return { ...prev, mealIndex: prev.mealIndex + 1 };
+      return { ...prev, mealIndex: prev.mealIndex + 1, isLive: false };
     });
+  };
+  // Return to live mode
+  const handleGoLive = () => {
+    const currentDayOffset = getDayOffset(now);
+    const currentMealIdx = getCurrentMealIndex(now);
+    setMealNav({ dayOffset: currentDayOffset, mealIndex: currentMealIdx, isLive: true });
   };
 
   // Get meal and day label
@@ -106,24 +112,17 @@ function App() {
   const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mealNav.dayOffset);
   const dayLabel = mealNav.dayOffset === 0 ? 'Today' : mealNav.dayOffset === 1 ? 'Tomorrow' : day.toLocaleDateString('en-IN', { weekday: 'long' });
 
-  // Format clock
-  const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  // Format clock (12-hour with AM/PM)
+  const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
 
   return (
-    <div className={darkMode ? 'min-h-screen bg-gray-900 text-white flex flex-col w-full h-full fixed inset-0' : 'min-h-screen bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 text-gray-900 flex flex-col w-full h-full fixed inset-0'}>
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 text-gray-900 flex flex-col w-full h-full fixed inset-0">
       <header className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-5 shadow-md relative flex flex-col items-center">
         <h1 className="text-3xl font-extrabold tracking-wide drop-shadow">Messmate</h1>
         <p className="text-base font-medium opacity-90">SRM Hostel Mess Menu</p>
         <div className="mt-2 text-lg font-mono bg-white/20 rounded px-3 py-1 shadow inline-block tracking-widest">
           {timeString}
         </div>
-        <button
-          className="absolute top-4 right-4 bg-white/20 rounded-full px-3 py-1 text-lg font-semibold hover:bg-white/30 transition"
-          onClick={() => setDarkMode((d) => !d)}
-          aria-label="Toggle dark mode"
-        >
-          {darkMode ? '🌙' : '☀️'}
-        </button>
       </header>
       {/* Mess Toggle Switch */}
       <div className="flex justify-center items-center mt-6 mb-2">
@@ -150,8 +149,11 @@ function App() {
             &lt; Prev
           </button>
           <div className="flex flex-col items-center">
-            <span className="font-bold text-lg tracking-wide text-gray-700 dark:text-gray-200">{meal.name}</span>
+            <span className="font-bold text-lg tracking-wide text-gray-700">{meal.name}</span>
             <span className="text-xs text-gray-500">{dayLabel}</span>
+            {!mealNav.isLive && (
+              <button onClick={handleGoLive} className="mt-1 text-xs text-blue-600 underline">Go Live</button>
+            )}
           </div>
           <button
             onClick={handleNextMeal}
@@ -162,18 +164,17 @@ function App() {
         </div>
         {/* Meal Card */}
         <section className="w-full flex flex-col items-center">
-          <div className="w-full bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 mb-4 flex flex-col items-center border-4 border-blue-200 dark:border-blue-900">
+          <div className="w-full bg-white rounded-3xl shadow-xl p-6 mb-4 flex flex-col items-center border-4 border-blue-200">
             <div className="flex items-center gap-3 mb-2">
-              <span className="text-2xl font-bold text-blue-500 dark:text-blue-300">{meal.name}</span>
+              <span className="text-2xl font-bold text-blue-500">{meal.name}</span>
               <span className="text-xs text-gray-500">{meal.start.hour.toString().padStart(2, '0')}:{meal.start.min.toString().padStart(2, '0')} – {meal.end.hour.toString().padStart(2, '0')}:{meal.end.min.toString().padStart(2, '0')}</span>
             </div>
             <div className="grid grid-cols-1 gap-4 w-full">
               {meal.items.map((item, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-4 bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 dark:from-blue-900 dark:via-purple-900 dark:to-pink-900 rounded-xl p-4 shadow hover:scale-105 transition text-lg font-semibold"
+                  className="flex items-center gap-4 bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 rounded-xl p-4 shadow hover:scale-105 transition text-lg font-semibold"
                 >
-                  <span className="text-2xl mr-2">{item.icon}</span>
                   <span>{item.name}</span>
                 </div>
               ))}
