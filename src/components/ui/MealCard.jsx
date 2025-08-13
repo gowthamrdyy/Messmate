@@ -226,7 +226,7 @@ const MealCard = memo(({
             transition={{ duration: 0.3, delay: 0.1 }}
             className="relative"
           >
-            {/* Navigation Buttons */}
+            {/* Navigation and Meal Title in Same Line */}
             <div className="flex items-center justify-between mb-4">
               {/* Previous Button */}
               <motion.button
@@ -246,34 +246,16 @@ const MealCard = memo(({
                 <ChevronLeftIcon />
               </motion.button>
 
-              {/* Live Indicator */}
-              <div className="flex items-center">
-                {isLive && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 text-white shadow-lg border border-white/20"
-                    role="status"
-                    aria-live="polite"
-                    aria-label="Currently viewing live meal"
-                  >
-                    <motion.div
-                      animate={{ 
-                        scale: [1, 1.2, 1],
-                        rotate: [0, 360]
-                      }}
-                      transition={{ 
-                        scale: { duration: 1.5, repeat: Infinity },
-                        rotate: { duration: 3, repeat: Infinity, ease: "linear" }
-                      }}
-                      className="flex items-center justify-center"
-                    >
-                      <WifiIcon />
-                    </motion.div>
-                    <span className="text-xs font-bold tracking-wide">LIVE</span>
-                  </motion.div>
-                )}
-              </div>
+              {/* Meal Title */}
+              <CardTitle 
+                className="flex items-center justify-center gap-2"
+                id={`meal-${meal.name.toLowerCase()}-title`}
+              >
+                <span className="text-xl" role="img" aria-label={`${meal.name} emoji`}>{getFoodEmoji(meal.name)}</span>
+                <span className="font-display font-semibold text-lg md:text-xl lg:text-2xl text-gray-900 dark:text-white">
+                  {meal.name}
+                </span>
+              </CardTitle>
 
               {/* Next Button */}
               <motion.button
@@ -294,16 +276,31 @@ const MealCard = memo(({
               </motion.button>
             </div>
 
-            {/* Meal Title and Info */}
-            <CardTitle 
-              className="text-center flex items-center justify-center gap-2"
-              id={`meal-${meal.name.toLowerCase()}-title`}
-            >
-              <span className="text-2xl" role="img" aria-label={`${meal.name} emoji`}>{getFoodEmoji(meal.name)}</span>
-              <span className="font-display font-semibold text-xl md:text-2xl lg:text-3xl text-gray-900 dark:text-white">
-                {meal.name}
-              </span>
-            </CardTitle>
+            {/* Live Indicator */}
+            {isLive && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex items-center justify-center mb-4"
+              >
+                <div className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 text-white shadow-lg border border-white/20">
+                  <motion.div
+                    animate={{ 
+                      scale: [1, 1.2, 1],
+                      rotate: [0, 360]
+                    }}
+                    transition={{ 
+                      scale: { duration: 1.5, repeat: Infinity },
+                      rotate: { duration: 3, repeat: Infinity, ease: "linear" }
+                    }}
+                    className="flex items-center justify-center"
+                  >
+                    <WifiIcon />
+                  </motion.div>
+                  <span className="text-xs font-bold tracking-wide">LIVE</span>
+                </div>
+              </motion.div>
+            )}
             <CardDescription 
               className="text-center text-body-small text-gray-600 dark:text-gray-400"
               id={`meal-${meal.name.toLowerCase()}-description`}

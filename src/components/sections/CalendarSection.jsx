@@ -155,12 +155,6 @@ const CalendarSection = ({ className = '', menuData }) => {
         <CardContent>
           {/* Week Calendar */}
           <div className="grid grid-cols-7 gap-1 mb-6">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
-              <div key={day} className="text-center text-xs font-medium text-gray-500 dark:text-gray-400 py-2">
-                {day}
-              </div>
-            ))}
-            
             {weekDates.map((date, index) => (
               <motion.button
                 key={date.toISOString()}

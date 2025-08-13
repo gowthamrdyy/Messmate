@@ -49,7 +49,11 @@ const DaySelector = memo(({
           <div className="flex items-center gap-2">
             <Calendar size={16} className="text-blue-600 dark:text-blue-400" style={{ display: 'inline-block' }} />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {getDayLabel(Math.floor((selectedDate - today) / (1000 * 60 * 60 * 24)), today)}
+              {selectedDate.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                year: selectedDate.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
+              })}
             </span>
           </div>
 
