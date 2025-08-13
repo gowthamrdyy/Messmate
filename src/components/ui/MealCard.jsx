@@ -19,6 +19,11 @@ const MealCard = memo(({
   className = '',
   showHorizontalScroll = false,
   slideDirection = 0,
+  onPrevious,
+  onNext,
+  onGoLive,
+  isLive = false,
+  disabled = false,
   ...props 
 }) => {
   const { favorites, toggleFavorite, notificationsEnabled } = useAppStore();
@@ -39,6 +44,35 @@ const MealCard = memo(({
       style={{ display: 'inline-block' }}
     >
       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+    </svg>
+  );
+
+  // Navigation icons
+  const ChevronLeftIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="15,18 9,12 15,6"></polyline>
+    </svg>
+  );
+
+  const ChevronRightIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="9,18 15,12 9,6"></polyline>
+    </svg>
+  );
+
+  const WifiIcon = () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 12a10 10 0 0 1 20 0"></path>
+      <path d="M5 12a7 7 0 0 1 14 0"></path>
+      <path d="M8 12a4 4 0 0 1 8 0"></path>
+      <circle cx="12" cy="12" r="1"></circle>
+    </svg>
+  );
+
+  const ClockIcon = () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <polyline points="12,6 12,12 16,14"></polyline>
     </svg>
   );
 
@@ -196,7 +230,113 @@ const MealCard = memo(({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.1 }}
+            className="relative"
           >
+            {/* Navigation Buttons */}
+            <div className="flex items-center justify-between mb-4">
+              {/* Previous Button */}
+              <motion.button
+                onClick={onPrevious}
+                disabled={disabled}
+                className={`
+                  flex items-center justify-center w-10 h-10 rounded-full
+                  bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600
+                  text-white shadow-md hover:shadow-lg
+                  transition-all duration-200 transform hover:scale-105 active:scale-95
+                  disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                  focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2
+                `}
+                whileTap={{ scale: disabled ? 1 : 0.95 }}
+                aria-label="Go to previous meal"
+              >
+                <ChevronLeftIcon />
+              </motion.button>
+
+              {/* Live Indicator or Go Live Button */}
+              <div className="flex items-center">
+                {isLive ? (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 text-white shadow-lg border border-white/20"
+                    role="status"
+                    aria-live="polite"
+                    aria-label="Currently viewing live meal"
+                  >
+                    <motion.div
+                      animate={{ 
+                        scale: [1, 1.2, 1],
+                        rotate: [0, 360]
+                      }}
+                      transition={{ 
+                        scale: { duration: 1.5, repeat: Infinity },
+                        rotate: { duration: 3, repeat: Infinity, ease: "linear" }
+                      }}
+                      className="flex items-center justify-center"
+                    >
+                      <WifiIcon />
+                    </motion.div>
+                    <span className="text-xs font-bold tracking-wide">LIVE</span>
+                  </motion.div>
+                ) : (
+                  <motion.button
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    onClick={onGoLive}
+                    className={`
+                      flex items-center space-x-2 px-3 py-1.5 rounded-full
+                      bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 
+                      hover:from-orange-600 hover:via-red-600 hover:to-pink-600
+                      text-white text-xs font-bold transition-all duration-300
+                      shadow-lg hover:shadow-xl transform hover:scale-110 active:scale-95
+                      focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2
+                      border border-white/20
+                    `}
+                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ 
+                      scale: 1.05,
+                      transition: { duration: 0.2 }
+                    }}
+                    aria-label="Go to current live meal"
+                  >
+                    <motion.div
+                      animate={{ 
+                        rotate: [0, 360],
+                        scale: [1, 1.1, 1]
+                      }}
+                      transition={{ 
+                        rotate: { duration: 3, repeat: Infinity, ease: "linear" },
+                        scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                      }}
+                      className="flex items-center justify-center"
+                    >
+                      <ClockIcon />
+                    </motion.div>
+                    <span className="font-bold tracking-wide">GO LIVE</span>
+                  </motion.button>
+                )}
+              </div>
+
+              {/* Next Button */}
+              <motion.button
+                onClick={onNext}
+                disabled={disabled}
+                className={`
+                  flex items-center justify-center w-10 h-10 rounded-full
+                  bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600
+                  text-white shadow-md hover:shadow-lg
+                  transition-all duration-200 transform hover:scale-105 active:scale-95
+                  disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                `}
+                whileTap={{ scale: disabled ? 1 : 0.95 }}
+                aria-label="Go to next meal"
+              >
+                <ChevronRightIcon />
+              </motion.button>
+            </div>
+
+            {/* Meal Title and Info */}
             <CardTitle 
               className="text-center flex items-center justify-center gap-2"
               id={`meal-${meal.name.toLowerCase()}-title`}

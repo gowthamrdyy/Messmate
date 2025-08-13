@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { HeaderSkeleton, MealCardSkeleton, NavigationSkeleton } from './Skeleton';
+import { HeaderSkeleton, MealCardSkeleton } from './Skeleton';
 import { FadeIn } from './PageTransition';
 
 const LoadingSpinner = ({ size = 'md', className = '' }) => {
@@ -146,11 +146,7 @@ export const AppLoadingState = () => {
       
       <main className="flex-1 flex flex-col items-center justify-start p-4 w-full max-w-md mx-auto pb-20">
         <FadeIn delay={0.3}>
-          <NavigationSkeleton />
-        </FadeIn>
-        
-        <FadeIn delay={0.4}>
-          <div className="w-full mt-4">
+          <div className="w-full">
             <MealCardSkeleton />
           </div>
         </FadeIn>

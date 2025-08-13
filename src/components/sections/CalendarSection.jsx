@@ -10,7 +10,7 @@ import useAppStore from '../../store/useAppStore';
 
 const CalendarSection = ({ className = '', menuData }) => {
   const { selectedMess, currentTime, favorites, toggleFavorite } = useAppStore();
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(currentTime);
 
   // Manual HTML heart icon as fallback
   const HeartIcon = ({ isFavorite }) => (
@@ -68,7 +68,7 @@ const CalendarSection = ({ className = '', menuData }) => {
   };
 
   const weekDates = getWeekDates(selectedDate);
-  const today = new Date();
+  const today = currentTime;
 
   const navigateWeek = (direction) => {
     const newDate = new Date(selectedDate);

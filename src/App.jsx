@@ -5,7 +5,6 @@ import { Analytics } from "@vercel/analytics/react";
 import Header from './components/ui/Header';
 import BlockSelector from './components/ui/BlockSelector';
 import CompactModeToggle from './components/ui/CompactModeToggle';
-import Navigation from './components/ui/Navigation';
 import MealCard from './components/ui/MealCard';
 import SwipeableContainer from './components/ui/SwipeableContainer';
 import CompactMealView from './components/ui/CompactMealView';
@@ -261,19 +260,7 @@ function App() {
               // Normal Mode View
               <>
                 <StaggerItem>
-                  <Navigation
-                    meal={meal}
-                    dayLabel={dayLabel}
-                    isLive={mealNavigation.isLive}
-                    onPrevious={navigateToPreviousMeal}
-                    onNext={navigateToNextMeal}
-                    onGoLive={goLive}
-                    className="mb-4"
-                  />
-                </StaggerItem>
-                
-                <StaggerItem>
-                  {/* Swipeable Meal Card */}
+                  {/* Swipeable Meal Card with integrated navigation */}
                   <SwipeableContainer
                     onNext={navigateToNextMeal}
                     onPrevious={navigateToPreviousMeal}
@@ -284,6 +271,11 @@ function App() {
                       menuItems={menuItems}
                       dayLabel={dayLabel}
                       showHorizontalScroll={false}
+                      onPrevious={navigateToPreviousMeal}
+                      onNext={navigateToNextMeal}
+                      onGoLive={goLive}
+                      isLive={mealNavigation.isLive}
+                      disabled={isLoading}
                     />
                   </SwipeableContainer>
                 </StaggerItem>
