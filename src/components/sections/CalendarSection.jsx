@@ -186,16 +186,6 @@ const CalendarSection = ({ className = '', menuData }) => {
 
           {/* Selected Day Meals */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900 dark:text-white">
-              {getDayLabel(Math.floor((selectedDate - today) / (1000 * 60 * 60 * 24)), today)}
-              <span className="text-sm font-normal text-gray-500 dark:text-gray-400 ml-2">
-                {selectedDate.toLocaleDateString('en-US', { 
-                  month: 'short', 
-                  day: 'numeric',
-                  year: selectedDate.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
-                })}
-              </span>
-            </h3>
 
             <StaggerContainer staggerDelay={0.1}>
               {getDayMeals(selectedDate).map((meal, index) => (

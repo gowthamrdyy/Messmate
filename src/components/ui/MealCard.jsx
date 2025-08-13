@@ -21,7 +21,6 @@ const MealCard = memo(({
   slideDirection = 0,
   onPrevious,
   onNext,
-  onGoLive,
   isLive = false,
   disabled = false,
   ...props 
@@ -69,12 +68,7 @@ const MealCard = memo(({
     </svg>
   );
 
-  const ClockIcon = () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10"></circle>
-      <polyline points="12,6 12,12 16,14"></polyline>
-    </svg>
-  );
+
 
   // Track renders in development
   useRenderTracking('MealCard', [meal?.name, menuItems.length, favorites.length]);
@@ -252,9 +246,9 @@ const MealCard = memo(({
                 <ChevronLeftIcon />
               </motion.button>
 
-              {/* Live Indicator or Go Live Button */}
+              {/* Live Indicator */}
               <div className="flex items-center">
-                {isLive ? (
+                {isLive && (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -278,42 +272,6 @@ const MealCard = memo(({
                     </motion.div>
                     <span className="text-xs font-bold tracking-wide">LIVE</span>
                   </motion.div>
-                ) : (
-                  <motion.button
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    onClick={onGoLive}
-                    className={`
-                      flex items-center space-x-2 px-3 py-1.5 rounded-full
-                      bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 
-                      hover:from-orange-600 hover:via-red-600 hover:to-pink-600
-                      text-white text-xs font-bold transition-all duration-300
-                      shadow-lg hover:shadow-xl transform hover:scale-110 active:scale-95
-                      focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2
-                      border border-white/20
-                    `}
-                    whileTap={{ scale: 0.95 }}
-                    whileHover={{ 
-                      scale: 1.05,
-                      transition: { duration: 0.2 }
-                    }}
-                    aria-label="Go to current live meal"
-                  >
-                    <motion.div
-                      animate={{ 
-                        rotate: [0, 360],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ 
-                        rotate: { duration: 3, repeat: Infinity, ease: "linear" },
-                        scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
-                      }}
-                      className="flex items-center justify-center"
-                    >
-                      <ClockIcon />
-                    </motion.div>
-                    <span className="font-bold tracking-wide">GO LIVE</span>
-                  </motion.button>
                 )}
               </div>
 

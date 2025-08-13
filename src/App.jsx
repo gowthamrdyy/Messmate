@@ -273,7 +273,6 @@ function App() {
                       showHorizontalScroll={false}
                       onPrevious={navigateToPreviousMeal}
                       onNext={navigateToNextMeal}
-                      onGoLive={goLive}
                       isLive={mealNavigation.isLive}
                       disabled={isLoading}
                     />
