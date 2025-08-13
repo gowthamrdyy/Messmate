@@ -56,8 +56,8 @@ const useAppStore = create(
   persist(
     (set, get) => ({
       // Theme state
-      theme: THEMES.LIGHT,
-      systemPreference: THEMES.LIGHT,
+      theme: THEMES.DARK,
+      systemPreference: THEMES.DARK,
 
       // Navigation state
       selectedMess: 'sannasi',
@@ -325,12 +325,13 @@ const useAppStore = create(
         const systemPref = mediaQuery.matches ? THEMES.DARK : THEMES.LIGHT;
         get().setSystemPreference(systemPref);
 
-        // Use saved theme or system preference
+        // Use saved theme or default to dark theme
         const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME);
         if (savedTheme && Object.values(THEMES).includes(savedTheme)) {
           get().setTheme(savedTheme);
         } else {
-          get().setTheme(systemPref);
+          // Default to dark theme instead of system preference
+          get().setTheme(THEMES.DARK);
         }
 
         // Listen for system preference changes

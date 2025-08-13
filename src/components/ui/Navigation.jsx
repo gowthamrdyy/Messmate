@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { memo } from 'react';
-import { ChevronLeft, ChevronRight, Wifi, Clock } from 'lucide-react';
 import { useState } from 'react';
 import Glass from './Glass';
 import { ComponentLoadingState } from './LoadingState';
@@ -19,16 +18,21 @@ const Navigation = memo(({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const { isReducedMotion } = useAccessibility();
 
-  // Manual HTML icons as fallbacks
-  const ClockIcon = () => (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block' }}>
-      <circle cx="12" cy="12" r="10"></circle>
-      <polyline points="12,6 12,12 16,14"></polyline>
+  // HTML/SVG Icons
+  const ChevronLeftIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="15,18 9,12 15,6"></polyline>
+    </svg>
+  );
+
+  const ChevronRightIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="9,18 15,12 9,6"></polyline>
     </svg>
   );
 
   const WifiIcon = () => (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block' }}>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M2 12a10 10 0 0 1 20 0"></path>
       <path d="M5 12a7 7 0 0 1 14 0"></path>
       <path d="M8 12a4 4 0 0 1 8 0"></path>
@@ -36,21 +40,16 @@ const Navigation = memo(({
     </svg>
   );
 
-  const ChevronLeftIcon = () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block' }}>
-      <polyline points="15,18 9,12 15,6"></polyline>
-    </svg>
-  );
-
-  const ChevronRightIcon = () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block' }}>
-      <polyline points="9,18 15,12 9,6"></polyline>
+  const ClockIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <polyline points="12,6 12,12 16,14"></polyline>
     </svg>
   );
 
   // Enhanced Go Live icon with pulsing animation
   const GoLiveIcon = () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block' }}>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="10"></circle>
       <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
       <path d="M12 2v4"></path>
@@ -134,9 +133,9 @@ const Navigation = memo(({
         onClick={() => handleNavigation(onPrevious, -1)}
         disabled={disabled || isTransitioning}
         className={`
-          group relative flex items-center space-x-1 px-3 py-2 rounded-lg
+          group relative flex items-center justify-center w-12 h-12 rounded-full
           bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600
-          text-white font-medium text-xs shadow-md hover:shadow-lg
+          text-white shadow-md hover:shadow-lg
           transition-all duration-200 transform hover:scale-105 active:scale-95
           disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
           focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2
@@ -148,19 +147,16 @@ const Navigation = memo(({
         <motion.div
           animate={{ x: isTransitioning ? -2 : 0 }}
           transition={{ duration: 0.2 }}
+          className="flex items-center justify-center"
         >
-          <>
-            <ChevronLeft size={14} className="text-white" style={{ display: 'inline-block' }} />
-            <ChevronLeftIcon />
-          </>
+          <ChevronLeftIcon />
         </motion.div>
-        <span>Prev</span>
       </motion.button>
       
       {/* Center Info */}
       <Glass
         variant="subtle"
-        className="flex flex-col items-center space-y-2 px-6 py-4 mx-4 min-w-[200px]"
+        className="flex flex-col items-center space-y-2 px-8 py-4 mx-6 min-w-[220px]"
         rounded="2xl"
       >
         <AnimatePresence mode="wait">
@@ -218,10 +214,7 @@ const Navigation = memo(({
                 }}
                 className="flex items-center justify-center"
               >
-                <>
-                  <Wifi size={14} aria-hidden="true" className="text-white" style={{ display: 'inline-block' }} />
-                  <WifiIcon />
-                </>
+                <WifiIcon />
               </motion.div>
               <span className="text-sm font-bold tracking-wide">LIVE</span>
             </motion.div>
@@ -260,10 +253,7 @@ const Navigation = memo(({
                 }}
                 className="flex items-center justify-center"
               >
-                <>
-                  <Clock size={14} className="text-white" style={{ display: 'inline-block' }} />
-                  <GoLiveIcon />
-                </>
+                <ClockIcon />
               </motion.div>
               <span className="font-bold tracking-wide">GO LIVE</span>
             </motion.button>
@@ -277,9 +267,9 @@ const Navigation = memo(({
         onClick={() => handleNavigation(onNext, 1)}
         disabled={disabled || isTransitioning}
         className={`
-          group relative flex items-center space-x-1 px-3 py-2 rounded-lg
+          group relative flex items-center justify-center w-12 h-12 rounded-full
           bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600
-          text-white font-medium text-xs shadow-md hover:shadow-lg
+          text-white shadow-md hover:shadow-lg
           transition-all duration-200 transform hover:scale-105 active:scale-95
           disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
@@ -288,15 +278,12 @@ const Navigation = memo(({
         aria-label="Go to next meal"
         aria-describedby="meal-navigation-description"
       >
-        <span>Next</span>
         <motion.div
           animate={{ x: isTransitioning ? 2 : 0 }}
           transition={{ duration: 0.2 }}
+          className="flex items-center justify-center"
         >
-          <>
-            <ChevronRight size={14} aria-hidden="true" className="text-white" style={{ display: 'inline-block' }} />
-            <ChevronRightIcon />
-          </>
+          <ChevronRightIcon />
         </motion.div>
       </motion.button>
       
