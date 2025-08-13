@@ -205,7 +205,7 @@ function App() {
   return (
     <ErrorBoundary>
       <SkipLinks />
-      <PageTransition className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex flex-col w-full transition-colors duration-200">
+      <PageTransition className="h-screen max-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex flex-col w-full transition-colors duration-200 overflow-hidden">
       <FadeIn delay={0.1}>
         <Header currentTime={currentTime} />
       </FadeIn>
@@ -232,7 +232,7 @@ function App() {
       {/* Main Content */}
       <main 
         id="main-content"
-        className="flex-1 flex flex-col justify-start p-4 w-full pb-20 overflow-y-auto"
+        className="flex-1 flex flex-col justify-start p-4 w-full pb-20 overflow-y-auto overflow-x-hidden max-h-full"
         role="main"
       >
         {/* Home Section - Default Meal View */}
