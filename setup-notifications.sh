@@ -54,3 +54,4 @@ echo "Public:  BGCwOJJHZWSx2lwHT44ncQUiZk7skhRU7wo-8WYL3W2OEKQC2i8FQ0-iU2nWM8GiZ
 echo "Private: dBUVN7nVZHPs5ryUZvRa1vn3rSdeGSWDhyD8OH2UeqE"
 echo ""
 echo "🎉 Setup complete! Follow the deployment guide to get background notifications working!"
+
