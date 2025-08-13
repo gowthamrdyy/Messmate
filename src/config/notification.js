@@ -83,6 +83,18 @@ export const NOTIFICATION_CONFIG = {
   ]
 };
 
+// Firebase Configuration
+export const FIREBASE_CONFIG = {
+  // Enable Firebase Cloud Messaging
+  useFirebase: process.env.VITE_USE_FIREBASE === 'true' || false,
+  
+  // Firebase project settings
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID || 'your-project-id',
+  
+  // Firebase Functions base URL
+  functionsBaseUrl: process.env.VITE_FIREBASE_FUNCTIONS_URL || 'https://your-region-your-project.cloudfunctions.net'
+};
+
 // Development vs Production settings
 export const getNotificationConfig = () => {
   if (isDevelopment) {
@@ -90,10 +102,13 @@ export const getNotificationConfig = () => {
       ...VAPID_CONFIG,
       ...API_CONFIG,
       ...NOTIFICATION_CONFIG,
+      ...FIREBASE_CONFIG,
       // Use mock API for development
       useMockAPI: true,
       // Skip VAPID for local development
-      skipVAPID: true
+      skipVAPID: true,
+      // Use Firebase in development if configured
+      useFirebase: FIREBASE_CONFIG.useFirebase
     };
   }
   
@@ -101,10 +116,13 @@ export const getNotificationConfig = () => {
     ...VAPID_CONFIG,
     ...API_CONFIG,
     ...NOTIFICATION_CONFIG,
+    ...FIREBASE_CONFIG,
     // Use real API for production
     useMockAPI: false,
     // Use VAPID for production
-    skipVAPID: false
+    skipVAPID: false,
+    // Use Firebase in production if configured
+    useFirebase: FIREBASE_CONFIG.useFirebase
   };
 };
 

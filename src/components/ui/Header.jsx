@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import ThemeToggle from './ThemeToggle';
-import NotificationSettings from './NotificationSettings';
 import Glass from './Glass';
 import { formatCurrentTime } from '../../utils/dateHelpers';
 import { APP_CONFIG } from '../../utils/constants';
@@ -72,13 +71,6 @@ const Header = ({ currentTime, className = '' }) => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: 0.3 }}
-            >
-              <NotificationSettings />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3, delay: 0.4 }}
             >
               <ThemeToggle />
             </motion.div>

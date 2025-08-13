@@ -1,10 +1,13 @@
 /**
  * Push Notification Service for Messmate
  * Handles push notification registration, sending, and management
+ * Now supports both Firebase Cloud Messaging and traditional web push
  */
 
 import getNotificationConfig, { validateVAPIDConfig, validateAPIConfig } from '../config/notification.js';
 import MockPushAPI from '../utils/mockPushAPI.js';
+import firebaseNotificationService from './firebaseNotificationService.js';
+import freePushNotificationService from './freePushNotificationService.js';
 
 class PushNotificationService {
   constructor() {
@@ -19,6 +22,10 @@ class PushNotificationService {
     
     // Initialize API client
     this.apiClient = this.config.useMockAPI ? new MockPushAPI() : null;
+    
+    // Check if Firebase should be used (default to free service)
+    this.useFirebase = this.config.useFirebase || false;
+    this.useFreeService = !this.useFirebase; // Use free service by default
     
     // Validate configuration
     this.validateConfiguration();
@@ -51,14 +58,23 @@ class PushNotificationService {
     }
 
     try {
-      // Register service worker
-      this.registration = await navigator.serviceWorker.register('/sw.js');
-      console.log('Service Worker registered for push notifications');
-
-      // Check if already subscribed
-      this.subscription = await this.registration.pushManager.getSubscription();
-      
-      return true;
+      if (this.useFirebase) {
+        // Use Firebase Cloud Messaging
+        console.log('🚀 Initializing Firebase push notifications...');
+        const success = await firebaseNotificationService.initialize();
+        if (success) {
+          console.log('✅ Firebase push notifications initialized successfully');
+        }
+        return success;
+      } else {
+        // Use free push notification service
+        console.log('🚀 Initializing FREE push notifications...');
+        const success = await freePushNotificationService.initialize();
+        if (success) {
+          console.log('✅ Free push notifications initialized successfully');
+        }
+        return success;
+      }
     } catch (error) {
       console.error('Failed to initialize push notifications:', error);
       return false;
@@ -73,17 +89,12 @@ class PushNotificationService {
       throw new Error('Push notifications are not supported');
     }
 
-    const permission = await Notification.requestPermission();
-    
-    if (permission === 'granted') {
-      console.log('Notification permission granted');
-      return true;
-    } else if (permission === 'denied') {
-      console.log('Notification permission denied');
-      return false;
+    if (this.useFirebase) {
+      // Use Firebase notification permission
+      return await firebaseNotificationService.requestPermission();
     } else {
-      console.log('Notification permission dismissed');
-      return false;
+      // Use free notification permission
+      return await freePushNotificationService.requestPermission();
     }
   }
 
@@ -91,48 +102,20 @@ class PushNotificationService {
    * Subscribe to push notifications
    */
   async subscribe() {
-    if (!this.isSupported || !this.registration) {
+    if (!this.isSupported) {
       throw new Error('Push notifications not initialized');
     }
 
     try {
-      // Check if we should skip VAPID (development mode)
-      if (this.config.skipVAPID) {
-        console.log('🔧 Development mode: Skipping push subscription, using local notifications only');
-        
-        // Just request permission for local notifications
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          console.log('✅ Local notification permission granted');
-          return { permission: 'granted' };
-        } else {
-          throw new Error('Notification permission denied');
-        }
-      }
-
-      // For production, use proper push subscription
-      const subscribeOptions = {
-        userVisibleOnly: true
-      };
-
-      // Add VAPID key for production
-      if (this.vapidPublicKey && this.vapidPublicKey !== 'YOUR_VAPID_PUBLIC_KEY_HERE') {
-        const vapidPublicKey = this.urlBase64ToUint8Array(this.vapidPublicKey);
-        subscribeOptions.applicationServerKey = vapidPublicKey;
-        console.log('🔑 Using VAPID public key for push subscription');
+      if (this.useFirebase) {
+        // Use Firebase Cloud Messaging
+        console.log('🔧 Using Firebase Cloud Messaging for push notifications');
+        return await firebaseNotificationService.subscribe();
       } else {
-        console.warn('⚠️ No VAPID public key configured, push notifications may not work');
+        // Use free push notification service
+        console.log('🔧 Using FREE push notification service');
+        return await freePushNotificationService.subscribe();
       }
-
-      // Subscribe to push manager
-      this.subscription = await this.registration.pushManager.subscribe(subscribeOptions);
-      console.log('✅ Push subscription created successfully');
-
-      // Send subscription to server
-      await this.sendSubscriptionToServer(this.subscription);
-
-      console.log('Successfully subscribed to push notifications');
-      return this.subscription;
     } catch (error) {
       console.error('Failed to subscribe to push notifications:', error);
       throw error;
@@ -143,17 +126,14 @@ class PushNotificationService {
    * Unsubscribe from push notifications
    */
   async unsubscribe() {
-    if (!this.subscription) {
-      return false;
-    }
-
     try {
-      await this.subscription.unsubscribe();
-      await this.removeSubscriptionFromServer(this.subscription);
-      
-      this.subscription = null;
-      console.log('✅ Successfully unsubscribed from push notifications');
-      return true;
+      if (this.useFirebase) {
+        // Use Firebase Cloud Messaging
+        return await firebaseNotificationService.unsubscribe();
+      } else {
+        // Use free push notification service
+        return await freePushNotificationService.unsubscribe();
+      }
     } catch (error) {
       console.error('❌ Failed to unsubscribe from push notifications:', error);
       return false;
@@ -405,11 +385,11 @@ class PushNotificationService {
    * Get subscription status
    */
   getSubscriptionStatus() {
-    return {
-      isSupported: this.isSupported,
-      isSubscribed: !!this.subscription,
-      permission: Notification.permission
-    };
+    if (this.useFirebase) {
+      return firebaseNotificationService.getSubscriptionStatus();
+    } else {
+      return freePushNotificationService.getSubscriptionStatus();
+    }
   }
 
   /**
@@ -417,35 +397,13 @@ class PushNotificationService {
    */
   async updatePreferences(preferences) {
     try {
-      // For local development, use mock API
-      if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-        const mockAPI = await import('../utils/mockPushAPI');
-        const result = await mockAPI.default.updatePreferences(
-          this.subscription?.toJSON(),
-          preferences
-        );
-        console.log('Notification preferences updated in mock API successfully');
-        return true;
+      if (this.useFirebase) {
+        // Use Firebase Cloud Messaging
+        return await firebaseNotificationService.updatePreferences(preferences);
+      } else {
+        // Use free push notification service (localStorage)
+        return await freePushNotificationService.updatePreferences(preferences);
       }
-
-      // For production, use real API
-      const response = await fetch(`${this.serverUrl}/api/push/preferences`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          subscription: this.subscription?.toJSON(),
-          preferences: preferences
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update preferences');
-      }
-
-      console.log('Notification preferences updated successfully');
-      return true;
     } catch (error) {
       console.error('Failed to update notification preferences:', error);
       return false;

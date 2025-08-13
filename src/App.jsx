@@ -11,7 +11,6 @@ import CompactMealView from './components/ui/CompactMealView';
 import DaySelector from './components/ui/DaySelector';
 import PWAInstallPrompt from './components/ui/PWAInstallPrompt';
 import OfflineIndicator from './components/ui/OfflineIndicator';
-import NotificationSystem from './components/notifications/NotificationSystem';
 import { PageLoadingState, AppLoadingState } from './components/ui/LoadingState';
 import PageTransition, { FadeIn, SlideUp, StaggerContainer, StaggerItem } from './components/ui/PageTransition';
 import ErrorBoundary from './components/ui/ErrorBoundary';
@@ -20,14 +19,12 @@ import PerformanceMonitor from './components/ui/PerformanceMonitor';
 import SkipLinks from './components/ui/SkipLinks';
 import { useBottomNavigation, useSectionVisibility } from './hooks/useBottomNavigation';
 import useOfflineData from './hooks/useOfflineData';
-import notificationService from './services/notificationService';
 import { useTheme } from './hooks/useTheme.jsx';
 import useAppStore from './store/useAppStore';
 
 import { getScheduleForDay } from './utils/mealSchedule';
 import { formatCurrentTime, getDayLabel, getDayKey } from './utils/dateHelpers';
 import { useIsMobile } from './hooks/useMediaQuery';
-import { useMealTimeNotifications, useMenuUpdateNotifications } from './hooks/useNotifications.jsx';
 
 // Lazy load heavy sections for code splitting
 const FavoritesSection = lazy(() => import('./components/sections/FavoritesSection'));
@@ -84,7 +81,6 @@ function App() {
     selectedMess,
     currentTime,
     mealNavigation,
-    notificationsEnabled,
     isLoading,
     compactMode,
     setSelectedMess,
@@ -110,11 +106,6 @@ function App() {
         // Initialize store
         initialize();
         
-        // Initialize notification service
-        if (notificationsEnabled) {
-          await notificationService.requestPermission();
-        }
-        
         // Simulate loading time for smooth UX
         await new Promise(resolve => setTimeout(resolve, 1000));
         
@@ -128,7 +119,7 @@ function App() {
     };
 
     initializeApp();
-  }, [initialize, notificationsEnabled]);
+  }, [initialize]);
 
   // Live clock effect
   useEffect(() => {
@@ -187,9 +178,7 @@ function App() {
     setMealNavigation(diffDays, 0, false);
   };
 
-  // Initialize notifications (after menuItems is defined)
-  useMealTimeNotifications(mealNavigation, currentTime, menuItems, notificationsEnabled);
-  useMenuUpdateNotifications(notificationsEnabled);
+
 
   // Show initial loading screen
   if (isInitialLoading) {
@@ -208,6 +197,21 @@ function App() {
       <FadeIn delay={0.1}>
         <Header currentTime={currentTime} />
       </FadeIn>
+      
+      {/* FCM Demo Toggle */}
+      <div className="px-4 py-2 bg-blue-50 border-b border-blue-200">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-blue-800">
+            🔑 FCM Token Demo
+          </span>
+          <button
+            onClick={() => setShowFCMDemo(!showFCMDemo)}
+            className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors"
+          >
+            {showFCMDemo ? 'Show App' : 'Show FCM Demo'}
+          </button>
+        </div>
+      </div>
       
       <SlideUp delay={0.2}>
         <div className="flex items-center justify-between mt-4 mb-4 px-4">
