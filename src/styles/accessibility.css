@@ -1,0 +1,374 @@
+/* Accessibility Styles for WCAG 2.1 AA Compliance */
+
+/* Screen Reader Only Content */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Focus Indicators */
+.focus-visible {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+}
+
+/* High contrast focus for better visibility */
+.focus-visible-high-contrast {
+  outline: 3px solid #000000 !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+}
+
+/* Dark mode focus */
+.dark .focus-visible {
+  outline-color: #60a5fa !important;
+}
+
+/* Focus indicators for different element types */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+}
+
+/* Remove default focus outline and add custom one */
+*:focus {
+  outline: none !important;
+}
+
+/* Skip Links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #3b82f6;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 1000;
+  transition: top 0.3s ease;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .focus-visible {
+    outline: 3px solid #000000 !important;
+    outline-offset: 2px !important;
+  }
+  
+  .dark .focus-visible {
+    outline-color: #ffffff !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode adjustments */
+@media (prefers-contrast: high) {
+  .bg-gray-50 {
+    background-color: #ffffff !important;
+  }
+  
+  .bg-gray-900 {
+    background-color: #000000 !important;
+  }
+  
+  .text-gray-600 {
+    color: #000000 !important;
+  }
+  
+  .text-gray-400 {
+    color: #000000 !important;
+  }
+  
+  .border-gray-200 {
+    border-color: #000000 !important;
+  }
+  
+  .border-gray-700 {
+    border-color: #ffffff !important;
+  }
+}
+
+/* Color contrast improvements for WCAG AA compliance */
+.text-gray-500 {
+  color: #6b7280 !important; /* 4.5:1 contrast ratio */
+}
+
+.text-gray-600 {
+  color: #4b5563 !important; /* 7:1 contrast ratio */
+}
+
+.text-gray-700 {
+  color: #374151 !important; /* 12:1 contrast ratio */
+}
+
+/* Dark mode color contrast */
+.dark .text-gray-400 {
+  color: #9ca3af !important; /* 4.5:1 contrast ratio */
+}
+
+.dark .text-gray-500 {
+  color: #d1d5db !important; /* 7:1 contrast ratio */
+}
+
+/* Interactive element sizing for touch targets */
+button,
+a,
+input,
+select,
+textarea,
+[role="button"],
+[role="tab"],
+[role="menuitem"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Exception for text inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+textarea {
+  min-height: auto;
+  min-width: auto;
+}
+
+/* Touch target spacing */
+.touch-target {
+  padding: 12px;
+  margin: 4px;
+}
+
+/* ARIA live regions */
+[aria-live="polite"] {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+[aria-live="assertive"] {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Loading states for screen readers */
+[aria-busy="true"]::before {
+  content: "Loading...";
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Error states */
+[aria-invalid="true"] {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 1px #dc2626 !important;
+}
+
+/* Required field indicators */
+[aria-required="true"]::after {
+  content: " *";
+  color: #dc2626;
+}
+
+/* Expandable content */
+[aria-expanded="false"] + [aria-hidden="true"] {
+  display: none;
+}
+
+/* Modal and dialog focus management */
+[role="dialog"],
+[role="alertdialog"] {
+  outline: none;
+}
+
+/* List navigation */
+[role="listbox"] [role="option"] {
+  cursor: pointer;
+}
+
+[role="listbox"] [role="option"][aria-selected="true"] {
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* Tab navigation */
+[role="tab"] {
+  cursor: pointer;
+}
+
+[role="tab"][aria-selected="true"] {
+  background-color: #3b82f6;
+  color: white;
+}
+
+[role="tabpanel"] {
+  outline: none;
+}
+
+/* Menu navigation */
+[role="menu"] [role="menuitem"] {
+  cursor: pointer;
+}
+
+[role="menu"] [role="menuitem"]:hover,
+[role="menu"] [role="menuitem"]:focus {
+  background-color: #f3f4f6;
+}
+
+.dark [role="menu"] [role="menuitem"]:hover,
+.dark [role="menu"] [role="menuitem"]:focus {
+  background-color: #374151;
+}
+
+/* Progress indicators */
+[role="progressbar"] {
+  position: relative;
+}
+
+[role="progressbar"]::before {
+  content: attr(aria-valuenow) "%";
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Status messages */
+[role="status"] {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Alert messages */
+[role="alert"] {
+  position: relative;
+  padding: 12px;
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+[role="alert"][aria-live="assertive"] {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+.dark [role="alert"][aria-live="assertive"] {
+  background-color: #450a0a;
+  border: 1px solid #7f1d1d;
+  color: #fca5a5;
+}
+
+/* Tooltip accessibility */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]:hover::after,
+[data-tooltip]:focus::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f2937;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+/* Keyboard navigation indicators */
+.keyboard-nav .focus-visible {
+  outline: 3px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+}
+
+/* Disabled state styling */
+[aria-disabled="true"],
+[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Hidden content */
+[aria-hidden="true"] {
+  display: none !important;
+}
+
+/* Visually hidden but accessible */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Print styles for accessibility */
+@media print {
+  .sr-only,
+  .visually-hidden {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    clip: auto !important;
+    white-space: normal !important;
+  }
+  
+  .skip-link {
+    display: none !important;
+  }
+}

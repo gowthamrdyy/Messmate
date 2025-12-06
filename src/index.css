@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Nebula Design System v4.0 */
+:root {
+  /* Core Colors */
+  --nebula-dark: #0B0C15;
+  --nebula-light: #F4F6F8;
+  --nebula-primary: #6C5DD3;
+  --nebula-secondary: #FF754C;
+  --nebula-accent: #3F8CFF;
+
+  /* Surface Colors */
+  --surface-100: #FFFFFF;
+  --surface-200: #F8F9FC;
+  --surface-300: #E4E8F0;
+
+  /* Text Colors */
+  --text-primary: #1A202C;
+  --text-secondary: #6B7A90;
+  --text-tertiary: #9AA5B8;
+
+  /* Glass Effects */
+  --glass-clear: rgba(255, 255, 255, 0.7);
+  --glass-mist: rgba(255, 255, 255, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.5);
+
+  /* Shadows */
+  --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 0 15px rgba(108, 93, 211, 0.3);
+}
+
+/* Dark Mode Overrides */
+.dark {
+  --nebula-light: #0B0C15;
+  --surface-100: #1A202C;
+  --surface-200: #2D3748;
+  --surface-300: #4A5568;
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #A0AEC0;
+  --text-tertiary: #718096;
+
+  --glass-clear: rgba(26, 32, 44, 0.7);
+  --glass-mist: rgba(26, 32, 44, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--surface-200);
+  color: var(--text-primary);
+  line-height: 1.5;
+  height: 100%;
+  overflow: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Custom Components */
+.btn-primary {
+  background-color: #6C5DD3;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 15px rgba(108, 93, 211, 0.3);
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:active {
+  transform: scale(0.95);
+}
+
+.btn-secondary {
+  background-color: #FFFFFF;
+  color: #6C5DD3;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(108, 93, 211, 0.1);
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: #F8F9FC;
+}
+
+.btn-secondary:active {
+  transform: scale(0.95);
+}
+
+.card-glass {
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+.dark .card-glass {
+  background-color: rgba(11, 12, 21, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.input-field {
+  width: 100%;
+  background-color: #F8F9FC;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #1A202C;
+  transition: all 0.3s;
+}
+
+.input-field::placeholder {
+  color: #9AA5B8;
+}
+
+.input-field:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(108, 93, 211, 0.5);
+}
+
+/* Utilities */
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #6C5DD3, #3F8CFF);
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
