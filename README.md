@@ -1,4 +1,4 @@
-# 🍽️ MessMate
+# 🍽️ MessMate...
 
 > **Your Ultimate Digital Mess Companion for SRM Students**
 
