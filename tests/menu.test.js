@@ -1,0 +1,8 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {menu,days,meals,indiaNow,dayIndex,schedule,isNonVeg,nextBiryani} from '../dist/menu.js';
+test('all 28 meals are populated with unique dishes',()=>{assert.equal(menu.length,7);menu.forEach(day=>{assert.equal(day.length,4);day.forEach(items=>{assert.ok(items.length>=2);assert.equal(new Set(items).size,items.length);});});assert.equal(days.length,7);assert.equal(meals.length,4);});
+test('campus timezone crosses day and month correctly',()=>{let d=indiaNow(new Date('2026-10-31T20:00:00Z'));assert.equal(d.getMonth(),10);assert.equal(d.getDate(),1);assert.equal(d.getHours(),1);assert.equal(d.getMinutes(),30);assert.equal(dayIndex(d),6);});
+test('weekday/weekend breakfast and lunch schedules differ',()=>{assert.deepEqual(schedule(0)[0],[420,570]);assert.deepEqual(schedule(5)[0],[450,570]);assert.deepEqual(schedule(6)[1],[720,840]);assert.deepEqual(schedule(4)[1],[690,810]);});
+test('vegetarian filtering excludes eggs and each listed meat',()=>{for(const s of ['Boiled Egg (1 piece)','Masala Omelette','Mutton Gravy','Fish Gravy','Chicken (Pepper / Kadai)'])assert.ok(isNonVeg(s));for(const s of ['Paneer Butter Masala','Aloo Meal Maker Kasa','Veg Puff / Sweet Bun'])assert.ok(!isNonVeg(s));});
+test('biryani dates cover month rollover and only second/fourth Wednesday',()=>{for(const [input,expected] of [['2026-10-31T12:00:00','2026-11-11'],['2026-11-11T12:00:00','2026-11-11'],['2026-11-12T12:00:00','2026-11-25'],['2026-11-26T12:00:00','2026-12-09']]){const n=nextBiryani(new Date(input));assert.equal(`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`,expected);}});
