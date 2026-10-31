@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {menu,days,meals,indiaNow,dayIndex,schedule,isNonVeg,nextBiryani} from '../dist/menu.js';
+import {menu,days,meals,indiaNow,dayIndex,schedule,isNonVeg,nextBiryani} from '../public/menu.js';
 test('all 28 meals are populated with unique dishes',()=>{assert.equal(menu.length,7);menu.forEach(day=>{assert.equal(day.length,4);day.forEach(items=>{assert.ok(items.length>=2);assert.equal(new Set(items).size,items.length);});});assert.equal(days.length,7);assert.equal(meals.length,4);});
 test('campus timezone crosses day and month correctly',()=>{let d=indiaNow(new Date('2026-10-31T20:00:00Z'));assert.equal(d.getMonth(),10);assert.equal(d.getDate(),1);assert.equal(d.getHours(),1);assert.equal(d.getMinutes(),30);assert.equal(dayIndex(d),6);});
 test('weekday/weekend breakfast and lunch schedules differ',()=>{assert.deepEqual(schedule(0)[0],[420,570]);assert.deepEqual(schedule(5)[0],[450,570]);assert.deepEqual(schedule(6)[1],[720,840]);assert.deepEqual(schedule(4)[1],[690,810]);});
